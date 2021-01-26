@@ -483,12 +483,16 @@ end
 -- Name can be specified or left blank to automake a name
 -- Returns the bookmark if successful or nil if it can't make a bookmark
 function makeBookmark(bname)
-  if mp.get_property("path") ~= nil then
+  local fpath = mp.get_property('path')
+  if fpath ~= nil then
     if bname == nil then bname = mp.get_property("media-title").." @ %t" end
+    if string.sub(fpath, 1, 4) ~= "http" then
+      fpath = utils.join_path(mp.get_property('working-directory'), fpath)
+    end
     local bookmark = {
       name = parseName(bname),
       pos = mp.get_property_number("time-pos"),
-      path = parsePath(mp.get_property("path")),
+      path = parsePath(fpath),
       version = 2
     }
     return bookmark
